@@ -6,6 +6,12 @@
 // interpolation function 
 // trapezoidal rule and rectangle rule
 // loops must be statically unrolled
+template <class P, int LOWER, int HIGHER, class RULE>
+struct INTEGRATE {
+    static inline double integrate(int divisions) {
+        
+    };
+};
 
 
-#endif __part2_h__
+#endif
