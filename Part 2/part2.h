@@ -8,38 +8,49 @@
 // trapezoidal rule and rectangle rule
 // loops must be statically unrolled
 //iterative way
-
-template <class P>
-struct RECT {
-    static inline double eval(double div, int LOWER, int HIGHER) {
-        double sum = 0;
+template <class P, int COUNT>
+struct RECTUNROLL {
+    static inline double eval(double div, double lower) {
         P p;
-        //return RECTUNROLL<LOWER>::();
-        for (double i = LOWER; i <= HIGHER; i += div) {
+        double midpoint = (lower + (div + lower))/2;
+        return (div * p.eval(midpoint)) + RECTUNROLL<P, COUNT-1>::eval(div, lower+div);
+    };
+};
+
+template <class P> 
+struct RECTUNROLL<P, 0> {
+    static inline double eval(double div, double lower) {
+        P p;
+        double midpoint = (lower + (div + lower))/2;
+        return div * p.eval(midpoint);
+    };
+};
+
+template <class P, int COUNT>
+struct RECT {
+    static inline double eval(double lower, double higher) {
+        double div = (higher - lower) / (double) COUNT;
+        P p;
+
+        return RECTUNROLL<P, COUNT>::eval(div, lower);
+        /*for (double i = lower; i <= higher; i += div) {
             double midpoint = (i + (div + i))/2;
             sum += div * p.eval(midpoint);
         }
-        return sum;
+        return sum;*/
     }
 };
-/*
-template <double LOWER>
-struct RECTUNROLL {
-    static inline double eval(double div, P p) {
-        double midpoint = (LOWER + (div + LOWER))/2;
-        return (div * p.eval(midpoint)) + RECTUNROLL<LOWER+div>::eval(div, p);
-    };
-};
-*/
+
+
+
 template <class P>
 struct TRAP {};
 
-template <int LOWER, int HIGHER, class RULE>
+template <class RULE>
 struct INTEGRATE {
-    static inline double integrate(int divisions) {
-        double div = ((double) HIGHER - (double) LOWER) / divisions;
+    static inline double integrate(double lower, double higher) {
         
-        return RULE::eval(div, LOWER, HIGHER);
+        return RULE::eval(lower, higher);
     };
 };
 
