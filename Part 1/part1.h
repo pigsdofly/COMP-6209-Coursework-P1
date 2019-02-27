@@ -7,8 +7,8 @@
 template <int X>
 struct LIT {
     // double parameter not used but there so that its compatible with other expressions
-    static inline int eval(double a) {
-        return X;
+    static inline double eval(double a) {
+        return (double) X;
     };
 };
 
@@ -29,7 +29,7 @@ struct ADD {
 
 template <class X, class Y>
 struct SUB {
-    static inline int eval(double a) {
+    static inline double eval(double a) {
         return X::eval(a) - Y::eval(a);
     }
 };

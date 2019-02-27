@@ -2,11 +2,11 @@
 #include <iostream>
 
 int main() {
-    //typedef MULT< VAR, EXP< VAR, LIT<3>>> EXPR;
-    //DERIV<EXPR>::R derivative;
-    //typedef DIV< ADD<EXP<VAR, LIT<20>>, LIT<3>>, SUB<VAR, LIT<3> > > EXAMPLE;
-    typedef EXP<MULT<VAR,LIT<3>>, LIT<2>> EXPONENT;
-    DERIV<EXPONENT>::R derivative;  
-    std::cout<< derivative.eval(3) << std::endl;
+    // (x^20 + 3) / (x - 3)
+    typedef DIV< ADD<EXP<VAR, LIT<20>>, LIT<3>>, SUB<VAR, LIT<3>>> EXAMPLE;
+    DERIV<EXAMPLE>::R derivative;
+
+    std::cout<< derivative.eval(5) << std::endl;
+    std::cout<< derivative.eval(10) << std::endl;
 
 }

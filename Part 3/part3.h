@@ -2,73 +2,79 @@
 #define __part3_h__
 
 #include "part1.h"
+// Base template
 template<class C>
 struct DERIV {};
 
-// Templates use typedef to create new types based on the types given
-template <class n, class t>
-struct DERIV<EXP<n, t>> {
-
-    typedef MULT<EXP<n,SUB<t,LIT<1>>>,t> R;
+// These templates use typedefs so that we can represent the final derivative expression as a type to input values into.
+// dy/dx for x^y
+template <class X, class Y>
+struct DERIV<EXP<X, Y>> {
+    typedef MULT<EXP<X,SUB<Y,LIT<1>>>,Y> R;
     
     // If this template is called recursively, evaluate the above type R
-    static inline double eval(double i) {
-        return R::eval(i);
+    static inline double eval(double a) {
+        return R::eval(a);
     }
 };
 
-
-template <class n, class t>
-struct DERIV<MULT<n, t>> {
-    typedef ADD<MULT<DERIV<n>, t>,MULT<n, DERIV<t>>> R;
+// dy/dx for x*y
+template <class X, class Y>
+struct DERIV<MULT<X, Y>> {
+    typedef ADD<MULT<DERIV<X>, Y>,MULT<X, DERIV<Y>>> R;
     
-    static inline double eval(double i) {
-        return R::eval(i);
-    }
-};
-/*
-template <class n, class t>
-struct DERIV<DIV<n, t>> {
-    enum {RET = ADD<MULT<DERIV<n>::RET, t>, MULT<n, DERIV<t>::RET>>};
-    typedef DIV< SUB < MULT < t,DERIV<n> >, MULT < t, DERIV<t> >,EXP<t,LIT<2>> R;
-    static inline double eval(double i) {
-        return R::eval(i);
+    static inline double eval(double a) {
+        return R::eval(a);
     }
 };
 
-template<class n, class t>
-struct DERIV<ADD<n, t>> {
-    enum {RET = ADD<MULT<DERIV<n>::RET, t>, MULT<n, DERIV<t>::RET>>};
-    typedef ADD<DERIV<n>, DERIV<t>> R;
-    static inline double eval(double i) {
-        return R::eval(i);
+// dy/dx for x/y
+template <class X, class Y>
+struct DERIV<DIV<X, Y>> {
+    typedef DIV < SUB <MULT <Y, DERIV<X> >, MULT<X, DERIV<Y> > >, EXP <Y, LIT<2> > > R;
+    
+    static inline double eval(double a) {
+        return R::eval(a);
     }
 };
 
-template<class n, class t>
-struct DERIV<SUB<n, t>> {
-    enum {RET = ADD<MULT<DERIV<n>::RET, t>, MULT<n, DERIV<t>::RET>>};
-    typedef SUB<DERIV<n>, DERIV<t>> R;
-    static inline double eval(double i) {
-        return R::eval(i);
+// dy/dx for x + y
+template<class X, class Y>
+struct DERIV<ADD<X, Y>> {
+    typedef ADD<DERIV<X>, DERIV<Y>> R;
+
+    static inline double eval(double a) {
+        return R::eval(a);
     }
 };
-*/
+
+// dy/dx for x - y
+template<class X, class Y>
+struct DERIV<SUB<X, Y>> {
+    typedef SUB<DERIV<X>, DERIV<Y>> R;
+    
+    static inline double eval(double a) {
+        return R::eval(a);
+    }
+};
+
+// dy/dx for x
 template<>
 struct DERIV<VAR> {
     typedef LIT<1> R;
 
-    static inline int eval(double m) {
-        return R::eval(m);
+    static inline double eval(double a) {
+        return R::eval(a);
     }
 };
 
-template <int n>
-struct DERIV<LIT<n>> {
+// dy/dx for literal
+template <int X>
+struct DERIV<LIT<X>> {
     typedef LIT<0> R;
 
-    static inline int eval(double m) {
-        return R::eval(m);
+    static inline double eval(double a) {
+        return R::eval(a);
     }
 };
 
