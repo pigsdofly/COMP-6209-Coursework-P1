@@ -11,7 +11,6 @@ struct DERIV {};
 template <class X, class Y>
 struct DERIV<EXP<X, Y>> {
     typedef MULT<EXP<X,SUB<Y,LIT<1>>>,Y> R;
-    
     // If this template is called recursively, evaluate the above type R
     static inline double eval(double a) {
         return R::eval(a);
