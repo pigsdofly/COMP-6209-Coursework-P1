@@ -7,14 +7,14 @@
 template <int X>
 struct LIT {
     // double parameter not used but there so that its compatible with other expressions
-    static inline double eval(double a) {
+    static constexpr double eval(double a) {
         return (double) X;
     };
 };
 
 // Template for a polynomial variable
 struct VAR {
-    static inline double eval(double a) {
+    static constexpr double eval(double a) {
         return a;
     }
 };
@@ -22,35 +22,35 @@ struct VAR {
 // Templates for mathematical expressions (plus, minus, multiply, divide, exponentiate)
 template <class X, class Y>
 struct ADD {
-    static inline double eval(double a) {
+    static constexpr double eval(double a) {
         return X::eval(a) + Y::eval(a);
     }
 };
 
 template <class X, class Y>
 struct SUB {
-    static inline double eval(double a) {
+    static constexpr double eval(double a) {
         return X::eval(a) - Y::eval(a);
     }
 };
 
 template <class X, class Y>
 struct MULT {
-    static inline double eval(double a) {
+    static constexpr double eval(double a) {
         return X::eval(a) * Y::eval(a);
     }
 };
 
 template <class X, class Y>
 struct DIV {
-    static inline double eval(double a) {
+    static constexpr double eval(double a) {
         return X::eval(a) / Y::eval(a);
     }
 };
 
 template <class X, class Y>
 struct EXP {
-    static inline double eval(double a) {
+    static constexpr double eval(double a) {
         // Using cmath pow function for exponentiation
         return pow(X::eval(a),Y::eval(a));
     }
