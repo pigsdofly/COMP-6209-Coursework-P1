@@ -4,7 +4,12 @@
 #include "part1.h"
 // Base template
 template<class C>
-struct DERIV {};
+struct DERIV {
+    typedef DERIV<C> R;
+    static constexpr double eval(double a) {
+        return R::eval(a);
+    }
+};
 
 // These templates use typedefs so that we can represent the final derivative expression as a type to input values into.
 // dy/dx for x^y

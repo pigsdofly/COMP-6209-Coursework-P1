@@ -16,18 +16,21 @@ struct IntComp<false, Then, Else> {
     typedef Else RET;
 };
 
-
-template<class P, int X, int Y>
-struct LessThan {
-    static constexpr bool eval() {
-        return P::eval(X) < Y;
-    }
-};
-
 template<class P, int X>
 struct IntDecl {
-    static const P p;
-    typedef typename IntComp<LessThan<P, X, 255>::eval(), char, IntComp<LessThan<P,X,3000>::eval(), int, long>::RET >::RET RET;
+    // Comparison between P and deriv, split into separate bool variable because really long statement
+    static const bool deriv_comp = (P::eval(X) > DERIV<P>::eval(X) && P::eval(X) > 0) || 
+                                    (P::eval(X) < DERIV<P>::eval(X) && P::eval(X) < 0);
+
+    // Take the bigger of P and its derivative
+    typedef typename IntComp< deriv_comp ,P,DERIV<P>>::RET PP; 
+    
+    // Have to do multiple comparisons this way because compiler error with nested IntComps
+    
+    typedef typename IntComp<(PP::eval(X) < 65535 && PP::eval(X) > 0), unsigned int, long>::RET uns_comp;
+    typedef typename IntComp<(PP::eval(X) > -32768 && PP::eval(X) < 32767), int, uns_comp>::RET int_comp;
+    typedef typename IntComp<(PP::eval(X) < 255 && PP::eval(X) > 0), char, int_comp>::RET char_comp;
+    typedef typename IntComp<(PP::eval(X) >= 65535), long, char_comp >::RET RET;
 
 };
 
