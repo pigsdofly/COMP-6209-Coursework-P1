@@ -2,7 +2,7 @@
 #define __part3_h__
 
 #include "part1.h"
-// Base template
+// Placeholder template so that you can call eval on a DERIV type
 template<class C>
 struct DERIV {
     typedef DERIV<C> R;

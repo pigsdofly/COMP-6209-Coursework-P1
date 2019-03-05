@@ -6,7 +6,8 @@
 // Write a program IntDecl that accepts a polynomial expression and integer X
 // Calculates smallest possible primitive type that can be used to declare a var to store both value of polynomial and its derivative
 
-template<bool Cond, class Then, class Else> 
+// If/else equivalent templates
+template<bool Condition, class Then, class Else> 
 struct IntComp {
     typedef Then RET;
 };
@@ -18,15 +19,15 @@ struct IntComp<false, Then, Else> {
 
 template<class P, int X>
 struct IntDecl {
-    // Comparison between P and deriv, split into separate bool variable because really long statement
+    // Comparison between size of P and deriv, split into separate variable because of length
     static const bool deriv_comp = (P::eval(X) > DERIV<P>::eval(X) && P::eval(X) > 0) || 
                                     (P::eval(X) < DERIV<P>::eval(X) && P::eval(X) < 0);
 
-    // Take the bigger of P and its derivative
-    typedef typename IntComp< deriv_comp ,P,DERIV<P>>::RET PP; 
+    // Take the larger of P and its derivative and set it to type PP
+    typedef typename IntComp< deriv_comp, P, DERIV<P>>::RET PP; 
     
+
     // Have to do multiple comparisons this way because compiler error with nested IntComps
-    
     typedef typename IntComp<(PP::eval(X) < 65535 && PP::eval(X) > 0), unsigned int, long>::RET uns_comp;
     typedef typename IntComp<(PP::eval(X) > -32768 && PP::eval(X) < 32767), int, uns_comp>::RET int_comp;
     typedef typename IntComp<(PP::eval(X) < 255 && PP::eval(X) > 0), char, int_comp>::RET char_comp;
