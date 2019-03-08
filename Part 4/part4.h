@@ -20,11 +20,9 @@ struct IntComp<false, Then, Else> {
 template<class P, int X>
 struct IntDecl {
     // Comparison between size of P and deriv, split into separate variable because of length
-    static const bool deriv_comp = (P::eval(X) > DERIV<P>::eval(X) && P::eval(X) > 0) || 
-                                    (P::eval(X) < DERIV<P>::eval(X) && P::eval(X) < 0);
-
-    // Take the larger of P and its derivative and set it to type PP
-    typedef typename IntComp< deriv_comp, P, DERIV<P>>::RET PP; 
+    static const bool deriv_comp = P::eval(X) > 0 && DERIV<P>::eval(X) < 0;
+    // If the value of deriv<P> is below 0 but P isn't, use deriv<P> for comparisons instead of P
+    typedef typename IntComp< deriv_comp, DERIV<P>, P>::RET PP; 
     
 
     // Have to do multiple comparisons this way because compiler error with nested IntComps
